@@ -908,6 +908,10 @@ static int32_t fs_readfile(uint64_t fh, char* buf, size_t size, off_t offset)
 				return -1;
 			}
 		}
+
+		// remaining
+		filesize -= offset;
+		
 		for (i = buf_offset ; i < UFBLKSIZ; i++)
 		{
 			*myptr++ = *((char*)&filebuf+buf_offset+i);
