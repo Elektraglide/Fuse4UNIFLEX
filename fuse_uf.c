@@ -42,6 +42,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
+#include <stdarg.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -91,6 +92,26 @@ const UDIRENT newdir[] =
     {0x00, 0x00, "."},
     {0x00, 0x00, ".."},
 };
+
+void fuse_uf_log(const char *pFormat, ...)
+{
+#ifdef DEBUG
+  va_list argList;
+  va_start(argList, pFormat);
+
+	static char message[8192];
+	vsnprintf(message, sizeof(message)-1, pFormat, argList);
+	message[8191] = '\0';
+
+	FILE *fp = fopen("/tmp/uf_fuse.log", "a");
+	if (fp)
+	{
+		fprintf(fp, "%s", message);
+		fclose(fp);
+	}
+#endif
+}
+
 
 //----------------------------------------------------------
 //
@@ -851,6 +872,9 @@ static int32_t fs_readfile(uint64_t fh, char* buf, size_t size, off_t offset)
 
 	memset(&fileino, 0, sizeof(LINODE));
 
+  fuse_uf_log("fs_readfile(%d, size=%d, off=%d)\n",(uint16_t)fh, (uint32_t)size, (uint32_t)offset);
+
+
 	if (fs_readfdn((uint16_t) fh, &fileino) < 0)
 	{
 		return -1;
@@ -864,6 +888,8 @@ static int32_t fs_readfile(uint64_t fh, char* buf, size_t size, off_t offset)
 
 	do
 	{
+		fuse_uf_log("fs_readfile: fileblock(%d)  readsize(%d) filesize(%d)\n",fileblock, readsize, filesize);
+	
 		absblock = fs_mapfile(&fileino, fileblock);
 		if (absblock < 0)
 		{
@@ -871,12 +897,14 @@ static int32_t fs_readfile(uint64_t fh, char* buf, size_t size, off_t offset)
 		}
 		else if (absblock == 0)
 		{
+			fuse_uf_log("fs_readfile: absblock == 0 => %d\n",readsize);
 			return readsize;
 		}
 		else
 		{
 			if (fs_readblock(absblock, (uint8_t*)&filebuf) < 0)
 			{
+				fuse_uf_log("fs_readfile: readblock fail %d\n",absblock);
 				return -1;
 			}
 		}
