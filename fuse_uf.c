@@ -925,6 +925,7 @@ static int32_t fs_readfile(uint64_t fh, char* buf, size_t size, off_t offset)
 		buf_offset = 0;
 		fileblock++;
 	} while (size);	
+
 	return readsize;
 }
 
@@ -1346,6 +1347,8 @@ static int32_t fs_opendir(const char *path, LINODE* lin)
 						}
 						goto OPENDIR;
 					}
+					i += extra;
+					entries -= extra;
 				}
 				entries--;
 				if (entries == 0)
