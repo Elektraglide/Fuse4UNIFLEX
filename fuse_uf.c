@@ -383,7 +383,7 @@ static int32_t fs_mapfile(LINODE* file, uint32_t relblock)
 	{
 		return file->f_ffmap[relblock];
 	}
-	else if (relblock < 138)		// single indirect
+	else if (relblock < (128+10))		// single indirect
 	{
 		if (file->f_ffmap[10])
 		{
@@ -394,7 +394,7 @@ static int32_t fs_mapfile(LINODE* file, uint32_t relblock)
 			return (fs_uf3ll4(&mybuf[relblock-10].blkad_h));
 		}
 	}	
-	else if (relblock < 16522)		// double indirect
+	else if (relblock < (128*128+128+10))		// double indirect
 	{
 		if (file->f_ffmap[11])
 		{
@@ -2145,7 +2145,7 @@ READDIREXIT: ;
 static int xmp_mknod(const char *path, mode_t mode, dev_t rdev)
 {
 	LINODE mylin;
-	int res;
+	int res = -1;
 
 	memset(&mylin, 0, sizeof(LINODE));
 
