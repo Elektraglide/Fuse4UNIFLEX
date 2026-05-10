@@ -205,24 +205,24 @@ static int32_t fs_isspec(LINODE* ino)
 
 
 // handle concatenating multiple DIRENT for long filenames
+// NB does not handle long filename spanning DIR blocks
 static int getfilename(char *nambuf, UDIRENT *dirbuf, int i)
 {
 	int extra = 0;
 
-	strncpy(nambuf, (char*)dirbuf[i].fname, NAMELENGTH);
-
-	// handle long filenames
+	// handle long filenames byappending
 	char *append = nambuf;
-	while(append[0] & 0x80)
+	do
 	{
-          append[0] &= 0x7f;
-          i++;
-          append += sizeof(dirbuf[0].fname);
-	  strncat(append, dirbuf[i].fname, NAMELENGTH);
-	  extra++;
-	}
+		strncpy(append, dirbuf[i].fname, NAMELENGTH);
+		append[0] &= 0x7f;
+		append += strlen(dirbuf[i].fname);
 
-	return extra;
+		i++;
+		extra++;
+	} while((dirbuf[i].fname[0] & 0x80) && ((dirbuf[i].dino_h == 0) && (dirbuf[i].dino_l == 0)));
+
+	return extra - 1;
 }
 
 //---------------------------------------------------------------------
