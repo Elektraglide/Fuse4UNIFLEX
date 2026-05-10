@@ -149,10 +149,10 @@ static uint32_t fs_uf4ll4(uint8_t* target)
 {
 	uint32_t myvar = 0;
 
-	myvar += (uint8_t)*(target + 0) << 24;	
-	myvar += (uint8_t)*(target + 1) << 16;	
-	myvar += (uint8_t)*(target + 2) << 8;	
-	myvar += (uint8_t)*(target + 3) << 0;	
+	myvar += ((uint32_t)*(target + 0)) << 24;
+	myvar += ((uint32_t)*(target + 1)) << 16;
+	myvar += ((uint32_t)*(target + 2)) << 8;
+	myvar += ((uint32_t)*(target + 3)) << 0;
 	return myvar;
 }
 
@@ -169,9 +169,9 @@ static uint32_t fs_uf3ll4(uint8_t* target)
 {
 	uint32_t myvar = 0;
 
-	myvar += (uint8_t)*(target + 0) << 16;	
-	myvar += (uint8_t)*(target + 1) << 8;	
-	myvar += (uint8_t)*(target + 2) << 0;	
+	myvar += ((uint32_t)*(target + 0)) << 16;
+	myvar += ((uint32_t)*(target + 1)) << 8;
+	myvar += ((uint32_t)*(target + 2)) << 0;
 	return myvar;
 }
 
