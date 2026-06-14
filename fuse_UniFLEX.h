@@ -1,10 +1,10 @@
 #ifndef __FUSE_UNIFLEX_H__
 #define __FUSE_UNIFLEX_H__
 
-// Smells like Uniflex kinda tries to account for leap years!
-//#define EPOCHOFFSET 315360000		// 60*60*24*365*10  => 2 days early
-#define EPOCHOFFSET 315532800		// 60*60*24*365.2*10	=> on the money
-//#define EPOCHOFFSET 315576000		// 60*60*24*365.25*10	=> 14 hours late
+// Uniflex epoch starts 1980, Linux starts 1970
+#define SECONDS_IN_DAY (60*60*24)
+#define NUM_OF_LEAP_DAYS_IN_10_YEARS 2
+#define EPOCHOFFSET 315532800		// SECONDS_IN_DAY * 365 * 10  + SECONDS_IN_DAY * NUM_OF_LEAP_DAYS_IN_10_YEARS
 
 #define ROOTFDN 1
 #define SIRBLK  1
